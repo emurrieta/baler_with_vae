@@ -3,6 +3,11 @@
 ![example workflow](https://github.com/baler-compressor/baler/actions/workflows/test_and_lint.yaml/badge.svg)
 ![example workflow](https://github.com/baler-compressor/baler/actions/workflows/docker.yaml/badge.svg)
 
+# Disclaimer
+This is a modified (forked) version of the original repository for the Baler compression tool, created as part of the course “Aprendizaje Automatizado” in the “Posgrado en Ciencia e Ingeniería de la Computación” at the National Autonomous University of Mexico (UNAM).
+
+The sole purpose of this fork is to present a modified version of the original code by incorporating the Variational Autoencoder (VAE) model as one of the available models in the tool. This fork has no affiliation with the original project, and all credits for the original work belong to its creators.
+
 # Introduction
 Baler is a tool used to test the feasibility of compressing different types of scientific data using machine learning-based autoencoders. Baler provides you with an easy way to:
 1. Train a machine learning model on your data
