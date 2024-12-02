@@ -4,7 +4,7 @@
 ![example workflow](https://github.com/baler-compressor/baler/actions/workflows/docker.yaml/badge.svg)
 
 # Disclaimer
-This is a modified (forked) version of the original repository for the Baler compression tool, created as part of the course “Aprendizaje Automatizado” in the “Posgrado en Ciencia e Ingeniería de la Computación” at the National Autonomous University of Mexico (UNAM).
+This is a modified (forked) version of the original repository for the Baler compression tool, created as part of the course “Aprendizaje Profundo” in the “Posgrado en Ciencia e Ingeniería de la Computación” at the National Autonomous University of Mexico (UNAM).
 
 The sole purpose of this fork is to present a modified version of the original code by incorporating the Variational Autoencoder (VAE) model as one of the available models in the tool. This fork has no affiliation with the original project, and all credits for the original work belong to its creators.
 
