@@ -293,8 +293,12 @@ def process(
     Returns: ndarray, ndarray, ndarray: Array with the train set, array with the test set and array with the
     normalization features.
     """
-    loaded = np.load(input_path)
+    print(f'input_path={input_path}')
+    loaded = np.load(input_path, allow_pickle=True)
+    print("Original Dataset Shape - ", loaded)
+
     data = loaded["data"]
+    #data = loaded["frames"]
 
     if verbose:
         print("Original Dataset Shape - ", data.shape)
@@ -666,6 +670,7 @@ def decompress(
 
     model_name = config.model_name
     latent_space_size = len(data[0])
+    #print(f'data.shape={data.shape}, latent_space_size={latent_space_size}')
     bs = config.batch_size
     model_dict = torch.load(str(model_path), map_location=get_device())
     if config.data_dimension == 2 and config.model_type == "dense":
@@ -700,7 +705,11 @@ def decompress(
     decompressed = []
     with torch.no_grad():
         for idx, data_batch in enumerate(tqdm(data_dl)):
+            #print(f'data_batch.shape={data_batch.shape}')
+            if model_name=='VAE':
+                data_batch = data_batch.permute(1,0,2)
             data_batch = data_batch.to(device)
+            #print (f'data_batch.shape={data_batch.shape}')
 
             out = model.decode(data_batch).to(device)
             # Converting back to numpyarray
@@ -726,9 +735,15 @@ def decompress(
         print("Total Deltas Added - ", deltas_added)
 
     if config.data_dimension == 2 and config.model_type == "dense":
-        decompressed = decompressed.reshape(
-            (len(decompressed), original_shape[1], original_shape[2])
-        )
+        print (f'decompressed.shape={decompressed.shape}')
+        if config.model_name == 'VAE':
+            decompressed = decompressed.reshape(
+                (decompressed.shape[0]*decompressed.shape[1], original_shape[1], original_shape[2])
+            )
+        else:
+            decompressed = decompressed.reshape(
+                (len(decompressed), original_shape[1], original_shape[2])
+              )
 
     return decompressed, names, normalization_features
 

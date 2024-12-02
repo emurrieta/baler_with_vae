@@ -78,6 +78,17 @@ def fit(
             loss, mse_loss, l1_loss = utils.loss_function_swae(
                 inputs, z, reconstructions, latent_dim
             )
+        #@ EML
+        elif(
+            hasattr(config, "custom_loss_function")
+            and config.custom_loss_function == "loss_function_for_vae"
+        ):
+            [mean, log_var] = model.encode(inputs)
+            loss, mse_loss, l1_loss = utils.loss_function_for_vae(x=inputs, 
+                                                              x_hat=reconstructions, 
+                                                              mean=mean, 
+                                                              log_var=log_var)
+            
         else:
             # Compute how far off the prediction is
             loss, mse_loss, l1_loss = utils.mse_sum_loss_l1(

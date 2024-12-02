@@ -192,7 +192,7 @@ def mse_sum_loss_l1(model_children, true_data, reconstructed_data, reg_param, va
             0 (int): Placeholder for MSE loss since it is not calculated during validation.
             0 (int): Placeholder for L1 loss since it is not calculated during validation.
     """
-    mse_sum = nn.MSELoss(reduction="sum")
+    mse_sum = nn.MSELoss(reduction="sum" )
     mse_loss = mse_sum(reconstructed_data, true_data)
     number_of_columns = true_data.shape[1]
 
@@ -210,6 +210,11 @@ def mse_sum_loss_l1(model_children, true_data, reconstructed_data, reg_param, va
     else:
         return mse_sum_loss, 0, 0
 
+
+def loss_function_for_vae(x, x_hat, mean, log_var):   
+    reproduction_loss = nn.functional.mse_loss(x_hat, x, reduction='sum')
+    KLD = - 0.5 * torch.sum(1+ log_var - mean.pow(2) - log_var.exp())
+    return reproduction_loss + KLD, 0, 0
 
 # Accuracy function still WIP. Not working properly.
 # Probably has to do with total_correct counter.

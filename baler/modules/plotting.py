@@ -30,7 +30,7 @@ def loss_plot(path_to_loss_data, output_path, config):
         config (dataclass): The config class containing attributes set in the config file
     """
     loss_data = np.load(path_to_loss_data)
-    str_list = ["Epochs:", "Model Name:", "Reg. Param:", "lr:", "BS:"]
+    str_list = ["Epochs:", "Model Name:", "Reg. Param:", "lr:", "BatchSize:","Loss:"]
 
     train_loss = loss_data[0]
     val_loss = loss_data[1]
@@ -40,13 +40,14 @@ def loss_plot(path_to_loss_data, output_path, config):
         config.reg_param,
         config.lr,
         config.batch_size,
+        train_loss[-1],
     ]
 
     plt.figure(figsize=(10, 7))
     plt.title("Loss plot")
-    plt.plot(train_loss, color="orange", label="Train Loss")
+    plt.plot(train_loss, color="red", label="Train Loss")
     if config.test_size:
-        plt.plot(val_loss, color="red", label="Validation Loss")
+        plt.plot(val_loss, color="orange", label="Validation Loss")
     for i in range(len(conf_list)):
         plt.plot([], [], " ", label=str_list[i] + " " + str(conf_list[i]))
     plt.xlabel("Epochs")

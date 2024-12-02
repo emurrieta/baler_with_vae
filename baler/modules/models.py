@@ -15,6 +15,7 @@
 import torch
 from torch import nn
 from torch.nn import functional as F
+import numpy as np
 
 
 import torch.utils.data
@@ -859,3 +860,57 @@ class TransformerAE(nn.Module):
         z = self.encoder(x)
         x = self.decoder(z)
         return x
+
+  
+class VAE(nn.Module):
+    def __init__(self, n_features, z_dim, *args, **kwargs):
+        super(VAE, self).__init__()
+        input_dim=n_features
+        hidden_dim=int(input_dim/2) 
+        latent_dim=int(input_dim/4) 
+        self.mean_var_layer=20  
+
+        print(f'input_dim={n_features}')
+        print(f'z_dim={z_dim}')
+        
+        # encoder
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.LeakyReLU(0.2),
+            nn.Linear(hidden_dim, latent_dim),
+            nn.LeakyReLU(0.2)
+            )
+               
+        # latent mean and variance 
+        self.mean_layer = nn.Linear(latent_dim, self.mean_var_layer)
+        self.logvar_layer = nn.Linear(latent_dim, self.mean_var_layer)
+        
+        # decoder
+        self.decoder = nn.Sequential(
+            nn.Linear(self.mean_var_layer, latent_dim),
+            nn.LeakyReLU(0.2),
+            nn.Linear(latent_dim, hidden_dim),
+            nn.LeakyReLU(0.2),
+            nn.Linear(hidden_dim, input_dim),
+            nn.Tanh()
+            )
+     
+    def encode(self, x: torch.Tensor):
+        x = self.encoder(x)
+        mean, logvar = self.mean_layer(x), self.logvar_layer(x)
+        return torch.stack([mean, logvar])
+
+    def reparameterization(self, mean, var):
+        epsilon = torch.randn_like(var)    
+        z = mean + var*epsilon
+        return z
+
+    def decode(self, x: torch.Tensor):
+        return self.decoder(x)
+
+    def forward(self, x: torch.Tensor):
+        [mean, logvar] = self.encode(x)
+        z = self.reparameterization(mean, logvar)
+        x_hat = self.decode(z)
+        return x_hat
+    
